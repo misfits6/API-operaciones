@@ -1,4 +1,5 @@
 from .pass_db_service import PassDBService 
+from .route_operation_service import RouteOperationService
 
 import json
 
@@ -31,8 +32,8 @@ class OperationService:
         
         
         
-        # # 2. Simulacion de la ruta
-        # simulation_result = await RouteOperationService.simulate_route(pass_db_data)
+        # 2. Simulacion de la ruta
+        simulation_result = await RouteOperationService.simulate_route(pass_db_data)
         
         # mock de resultado de simulación
         asignacion_buses = {
