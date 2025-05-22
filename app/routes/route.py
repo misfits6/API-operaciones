@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from ..models.todos import Todo
 from ..config.database import collection
+from ..config.pass_db import fetch_all
 from ..schema.schemas import list_serial, individual_serial
 from bson import ObjectId
 
@@ -38,3 +39,7 @@ async def delete_todo(id: str):
     """
     collection.find_one_and_delete({"_id": ObjectId(id)})
     return {"message": "Todo deleted successfully"}
+
+
+
+

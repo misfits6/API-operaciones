@@ -15,3 +15,8 @@ def list_serial(todos) -> list:
     """
     return [individual_serial(todo) for todo in todos]
 
+
+
+
+# schema de operaciones mongodb
+
