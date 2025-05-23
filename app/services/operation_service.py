@@ -57,7 +57,7 @@ class OperationService:
         print(f"Se han actualizado {buses_asigned} buses en PASS DB")
         
         # Retornar la respuesta con toda la información de la operación creada
-        return {"message": "Operation created successfully"}
+        return {"message": f"Se han actualizado {buses_asigned} buses en PASS DB"}
     
         # return {
         #     "message": "Operation created successfully",
