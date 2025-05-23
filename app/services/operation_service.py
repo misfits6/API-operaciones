@@ -29,21 +29,21 @@ class OperationService:
         
         
         # 2. FORMA DETALLADA - Primera reserva completa
-        print("\n" + "=" * 80)
-        print("PRIMERA RESERVA COMPLETA (Pretty Print)")
-        print("=" * 80)
-        if pass_db_data:
-            pprint(pass_db_data[0], indent=2, width=120)
-            print("=" * 80)
-            pprint(pass_db_data[-1], indent=2, width=120)
-            print("=" * 80)
-            print(json.dumps(pass_db_buses, indent=2))
+        # print("\n" + "=" * 80)
+        # print("PRIMERA RESERVA COMPLETA (Pretty Print)")
+        # print("=" * 80)
+        # if pass_db_data:
+        #     pprint(pass_db_data[0], indent=2, width=120)
+        #     print("=" * 80)
+        #     # pprint(pass_db_data[-1], indent=2, width=120)
+        #     # print("=" * 80)
+        #     print(json.dumps(pass_db_buses, indent=2))
         
         
         
         # 2. Simulacion de la ruta
         simulation_result = await RouteOperationService.asignar_buses_a_reservas(pass_db_data, pass_db_buses)
-        RouteOperationService.mostrar_asignaciones_detalladas(pass_db_data, pass_db_buses, simulation_result)
+        # RouteOperationService.mostrar_asignaciones_detalladas(pass_db_data, pass_db_buses, simulation_result)
         
         
         
@@ -58,14 +58,6 @@ class OperationService:
         
         # Retornar la respuesta con toda la información de la operación creada
         return {"message": f"Se han actualizado {buses_asigned} buses en PASS DB"}
-    
-        # return {
-        #     "message": "Operation created successfully",
-        #     "pass_db_data": pass_db_data,
-        #     "simulation_result": simulation_result,
-        #     "mongodb_id": mongodb_id
-        # }
-
 
 
 
