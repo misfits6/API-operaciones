@@ -20,6 +20,8 @@ class PassDBService:
                 r.id AS reserva_id,
                 r.fecha_emision AS fecha_reserva,
                 r.num_pasajeros,
+                r.tipo_reserva,
+                r.precio,
                 
                 -- Datos del pasajero
                 p.id AS pasajero_id,
@@ -27,33 +29,46 @@ class PassDBService:
                 p.apellido AS apellido_pasajero,
                 p.telf AS telefono_pasajero,
                 p.correo,
+                p.codigo_pass,
                 
                 -- Datos del vuelo
                 v.id AS vuelo_id,
                 v.codigo_vuelo,
-                v.aerolinea,
-                v.aeropuerto_salida,
-                v.aeropuerto_llegada,
-                v.fecha_salida,
-                v.hora_salida,
+                
+                -- Datos del avión (nueva relación)
+                a.id AS avion_id,
+                a.aerolinea,
+                a.aeropuerto_salida,
+                a.aeropuerto_llegada,
+                a.fecha_salida,
+                a.hora_salida,
+                a.tipo_vuelo,
+                a.origen,
                 
                 -- Datos del hospedaje
                 h.id AS hospedaje_id,
                 h.codigo_reserva,
-                h.nombre AS nombre_hospedaje,
-                h.direccion,
                 h.fecha_entrada,
                 h.fecha_salida,
                 h.num_habitacion,
-                h.lat,
-                h.lon
+                
+                -- Datos del hotel (nueva relación)
+                ht.id AS hotel_id,
+                ht.nombre AS nombre_hotel,
+                ht.direccion,
+                ht.telf AS telefono_hotel,
+                ht.lat,
+                ht.lon
                 
             FROM 
                 "Reserva" r
                 INNER JOIN "Pasajero" p ON r.pasajero_id = p.id
                 INNER JOIN "Vuelo" v ON r.vuelo_id = v.id
-                INNER JOIN "Hospedaje" h ON r.hospedaje_id = h.id;
+                INNER JOIN "Avion" a ON v.avion_id = a.id
+                INNER JOIN "Hospedaje" h ON r.hospedaje_id = h.id
+                INNER JOIN "Hotel" ht ON h.hotel_id = ht.id;
             """
+        
         
         reservas = PassDBService._reserves_data_to_dict(fetch_all(query))
         return reservas
@@ -67,7 +82,6 @@ class PassDBService:
         Returns:
             dict: datos de buses y conductores
         """
-        # TODO: organizar bien la consulta con los datos que son
         query = """
             SELECT 
                 -- Datos del bus
@@ -147,34 +161,47 @@ class PassDBService:
                 "reserva": {
                     "id": dato_dict["reserva_id"],
                     "fecha": format_date(dato_dict["fecha_reserva"]),
-                    "num_pasajeros": dato_dict["num_pasajeros"]
+                    "num_pasajeros": dato_dict["num_pasajeros"],
+                    "tipo_reserva": dato_dict["tipo_reserva"],
+                    "precio": dato_dict["precio"]
                 },
                 "pasajero": {
                     "id": dato_dict["pasajero_id"],
                     "nombre": dato_dict["nombre_pasajero"],
                     "apellido": dato_dict["apellido_pasajero"],
                     "telefono": dato_dict["telefono_pasajero"],
-                    "correo": dato_dict["correo"]
+                    "correo": dato_dict["correo"],
+                    "codigo_pass": dato_dict["codigo_pass"]
                 },
                 "vuelo": {
                     "id": dato_dict["vuelo_id"],
                     "codigo": dato_dict["codigo_vuelo"],
-                    "aerolinea": dato_dict["aerolinea"],
-                    "aeropuerto_salida": dato_dict["aeropuerto_salida"],
-                    "aeropuerto_llegada": dato_dict["aeropuerto_llegada"],
-                    "fecha_salida": format_date(dato_dict["fecha_salida"]),
-                    "hora_salida": dato_dict["hora_salida"]
+                    "avion": {
+                        "id": dato_dict["avion_id"],
+                        "aerolinea": dato_dict["aerolinea"],
+                        "aeropuerto_salida": dato_dict["aeropuerto_salida"],
+                        "aeropuerto_llegada": dato_dict["aeropuerto_llegada"],
+                        "fecha_salida": format_date(dato_dict["fecha_salida"]),
+                        "hora_salida": dato_dict["hora_salida"],
+                        "tipo_vuelo": dato_dict["tipo_vuelo"],
+                        "origen": dato_dict["origen"]
+                    }
                 },
                 "hospedaje": {
                     "id": dato_dict["hospedaje_id"],
                     "codigo_reserva": dato_dict["codigo_reserva"],
-                    "nombre": dato_dict["nombre_hospedaje"],
-                    "direccion": dato_dict["direccion"],
                     "fecha_entrada": format_date(dato_dict["fecha_entrada"]),
+                    "fecha_salida": format_date(dato_dict["fecha_salida"]),
                     "num_habitacion": dato_dict["num_habitacion"],
-                    "ubicacion": {
-                        "lat": dato_dict["lat"],
-                        "lon": dato_dict["lon"]
+                    "hotel": {
+                        "id": dato_dict["hotel_id"],
+                        "nombre": dato_dict["nombre_hotel"],
+                        "direccion": dato_dict["direccion"],
+                        "telefono": dato_dict["telefono_hotel"],
+                        "ubicacion": {
+                            "lat": dato_dict["lat"],
+                            "lon": dato_dict["lon"]
+                        }
                     }
                 }
             }

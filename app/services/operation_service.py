@@ -2,8 +2,8 @@ from .pass_db_service import PassDBService
 from .route_operation_service import RouteOperationService
 
 import json
-
-
+from pprint import pprint
+from datetime import datetime
 
 class OperationService:
     """Servicio orquestador para el flujo completo de la operación"""
@@ -27,21 +27,23 @@ class OperationService:
         pass_db_data = await PassDBService.get_reserves_data()
         pass_db_buses = await PassDBService.get_buses_data()
         
-        print(json.dumps(pass_db_data, indent=2))
-        print(json.dumps(pass_db_buses, indent=2))
+        
+        # 2. FORMA DETALLADA - Primera reserva completa
+        print("\n" + "=" * 80)
+        print("PRIMERA RESERVA COMPLETA (Pretty Print)")
+        print("=" * 80)
+        if pass_db_data:
+            pprint(pass_db_data[0], indent=2, width=120)
+            print("=" * 80)
+            pprint(pass_db_data[-1], indent=2, width=120)
+            print("=" * 80)
+            print(json.dumps(pass_db_buses, indent=2))
         
         
         
         # 2. Simulacion de la ruta
-        simulation_result = await RouteOperationService.simulate_route(pass_db_data)
-        
-        # mock de resultado de simulación
-        asignacion_buses = {
-            1: 1,
-            2: 1,
-            # ... más asignaciones
-        }
-        
+        simulation_result = await RouteOperationService.asignar_buses_a_reservas(pass_db_data, pass_db_buses)
+        RouteOperationService.mostrar_asignaciones_detalladas(pass_db_data, pass_db_buses, simulation_result)
         
         
         
@@ -51,7 +53,7 @@ class OperationService:
         
         
         # 4. Actualizar el estado en PASS DB
-        buses_asigned = await PassDBService.update_operation_buses(asignacion_buses)
+        buses_asigned = await PassDBService.update_operation_buses(simulation_result)
         print(f"Se han actualizado {buses_asigned} buses en PASS DB")
         
         # Retornar la respuesta con toda la información de la operación creada
